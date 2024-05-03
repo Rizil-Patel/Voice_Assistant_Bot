@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS - Virtual Assistant</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='avatar.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+    <section class="main">
+        <div class="image-container">
+            <div class="image">
+                <img src="{{ url_for('static', filename='giphy.gif') }}" alt="image">
+            </div>
+            <h1>I'm a Virtual Assistant, How may I help you?</h1>
+        </div>
+        <div class="input">
+            <button class="talk" id="talkButton"><i class="fas fa-microphone-alt"></i></button>
+        </div>
+        <div class="response" id="response"></div>
+    </section>
+
+    <script>
+        document.getElementById("talkButton").addEventListener("click", function() {
+            // Prompt user for command input
+            var command = "man";
+
+            if (command !== null && command.trim() !== "") {
+                // Send user command to Python script
+                fetch('/command', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ command: command })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("response").innerHTML = "<p>User Command: " + command + "</p>";
+                        document.getElementById("response").innerHTML += "<p>JARVIS Response: " + data.response + "</p>";
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById("response").innerHTML = "<p>Error occurred while processing the command.</p>";
+                    });
+            }
+        });
+    </script>
+</body>
+
+</html>
